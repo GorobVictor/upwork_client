@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:upwork_client/counter/counter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:upwork_client/core/core.dart';
+import 'package:upwork_client/features/pages.dart';
 import 'package:upwork_client/l10n/l10n.dart';
 
 class App extends StatelessWidget {
@@ -9,14 +11,21 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
         useMaterial3: true,
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      home: FutureBuilder(
+        future: LocalRepository().getToken(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Login();
+            // return snapshot.data != null ? MainPage() : Login();
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
