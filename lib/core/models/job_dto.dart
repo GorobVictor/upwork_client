@@ -1,37 +1,38 @@
+import 'package:json_annotation/json_annotation.dart';
+import 'package:upwork_client/core/core.dart';
+
+part 'job_dto.g.dart';
+
+@JsonSerializable()
 class JobDto {
-  int id;
-  String upWorkId;
-  String link;
-  String country;
-  dynamic priorityCountry;
-  bool isForbidden;
-  DateTime createdOn;
-  dynamic categoryId;
-  String title;
-  String description;
+  int? id;
+  String? title;
+  String? description;
+  String? upWorkId;
+  String? link;
+  String? country;
+  String? priorityCountry;
+  bool? isForbidden;
+  DateTime? createdOn;
+  SingleValueDto? category;
+  double? budget;
+  HourlyBudgetDto? hourlyBudget;
+  SingleValueDto? engagement;
+  SingleValueDto? workload;
+  SingleValueDto? english;
+  ContractorTier? contractorTier;
+  double? clientScore;
+  int? clientCountFeedback;
+  int? clientOpenJobs;
+  List<ChatGptHistory>? history;
+  bool? isPriority;
+  String? filterName;
+  List<String>? questions;
+  List<SkillDto>? skills;
 
-  JobDto({
-    required this.id,
-    required this.upWorkId,
-    required this.link,
-    required this.country,
-    required this.priorityCountry,
-    required this.isForbidden,
-    required this.createdOn,
-    required this.categoryId,
-    required this.title,
-    required this.description,
-  });
+  JobDto(this.id,this.title,this.description,this.upWorkId,this.link,this.country,this.priorityCountry,this.isForbidden,this.createdOn,this.category,this.budget,this.hourlyBudget,this.engagement,this.workload,this.english,this.contractorTier,this.clientScore,this.clientCountFeedback,this.clientOpenJobs,this.history,this.isPriority,this.filterName,this.questions,this.skills,);
 
-  JobDto.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as int,
-        upWorkId = json['upWorkId'].toString(),
-        link = json['link'].toString(),
-        country = json['country'].toString(),
-        priorityCountry = json['priorityCountry'],
-        isForbidden = json['isForbidden'] as bool,
-        createdOn = DateTime.parse(json['createdOn'].toString()),
-        categoryId = json['categoryId'],
-        title = json['title'].toString(),
-        description = json['description'].toString();
+  factory JobDto.fromJson(Map<String, dynamic> json) => _$JobDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$JobDtoToJson(this);
 }

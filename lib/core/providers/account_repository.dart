@@ -15,7 +15,7 @@ class AccountRepository {
 
   Future<String?> login(LoginDto model) async {
     final response = await http.post(
-      Uri.parse('${Constant.domain}Account/Login'),
+      Uri.parse('${Constant.domain}api/Account/Login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

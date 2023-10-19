@@ -1,40 +1,179 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:upwork_client/core/core.dart';
 import 'package:upwork_client/core/providers/jobs_repository.dart';
 
 class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
+  final signalR = SignalRRepository();
+
+  final Future<List<JobDto>?> func = JobsRepository().getJobs(0, 30);
+  final List<JobDto> listJobs = [];
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    func.then((value) {
+      try {
+        setState(() {
+          listJobs.addAll(value!);
+        });
+        signalR.addOn(_handle);
+      } catch (e) {}
+    });
+    _scrollController.addListener(() async {
+      if (_scrollController.position.maxScrollExtent ==
+          _scrollController.position.pixels) {
+        final result = await JobsRepository().getJobs(listJobs.length, 30);
+        setState(() {
+          listJobs.addAll(result!);
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Main Page')),
-      body: FutureBuilder(
-        future: JobsRepository().getJobs(0, 30),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            final result = snapshot.data! as List<JobDto>;
-
-            return ListView.builder(
-              itemCount: result.length,
+      body: listJobs.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              controller: _scrollController,
+              itemCount: listJobs.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Column(children: [
-                    Text(result[index].title),
-                    Text(result[index].upWorkId),
-                    Text(result[index].country),
-                  ],),
-                );
+                return UpWorkCard(job: listJobs[index]);
               },
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+            ),
+    );
+  }
+
+  void _handle(List<dynamic>? parameters) {
+    final list = (parameters!.first as List)
+        .map((e) => e as Map<String, dynamic>)
+        .map(JobDto.fromJson)
+        .toList();
+
+    setState(() {
+      listJobs.insertAll(0, list);
+      print(list);
+    });
+  }
+}
+
+class UpWorkCard extends StatelessWidget {
+  const UpWorkCard({required this.job, super.key});
+
+  final JobDto job;
+
+  @override
+  Widget build(BuildContext context) {
+    var budget = job.budget == null
+        ? job.hourlyBudget.toString()
+        : job.budget.toString();
+
+    if (budget == 'null') {
+      budget = '';
+    } else {
+      budget += r' $';
+    }
+
+    const top = 8.0;
+    const rightLeft = 8.0;
+    const radius = Radius.circular(10);
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: top,
+        right: rightLeft,
+        left: rightLeft,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: job.isPriority ?? false
+              ? const Color.fromRGBO(202, 229, 207, 1)
+              : Colors.white,
+          borderRadius: const BorderRadius.all(radius),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Wrap(
+                children: [
+                  StandardText(
+                    text: job.title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      StandardText(
+                        text: budget,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: StandardText(
+                          text: job.engagement?.value,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  StandardText(
+                    text: '${job.category?.value ?? ''}, ',
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: StandardText(
+                      text: job.contractorTier
+                          .toString()
+                          .replaceAll('ContractorTier.', ''),
+                    ),
+                  ),
+                ],
+              ),
+              StandardText(
+                text: job.country,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class StandardText extends StatelessWidget {
+  const StandardText({required this.text, super.key, this.style});
+
+  final String? text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text ?? '',
+        style: style,
       ),
     );
   }

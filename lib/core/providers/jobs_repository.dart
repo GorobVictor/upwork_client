@@ -16,7 +16,7 @@ class JobsRepository {
 
   Future<List<JobDto>?> getJobs(int skip, int take) async {
     final response = await http.get(
-      Uri.parse('${Constant.domain}Job/GetJobs?skip=$skip&take=$take'),
+      Uri.parse('${Constant.domain}api/Job/GetJobs?skip=$skip&take=$take'),
       headers: await getHeaders(),
     );
 
