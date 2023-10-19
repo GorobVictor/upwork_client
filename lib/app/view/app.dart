@@ -19,8 +19,7 @@ class App extends StatelessWidget {
         future: LocalRepository().getToken(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Login();
-            // return snapshot.data != null ? MainPage() : Login();
+            return snapshot.data != null ? MainPage() : const Login();
           } else {
             return const Center(child: CircularProgressIndicator());
           }
