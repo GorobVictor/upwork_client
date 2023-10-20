@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:upwork_client/core/core.dart';
 import 'package:upwork_client/core/providers/jobs_repository.dart';
+import 'package:upwork_client/features/full_card/full_card.dart';
+import 'package:upwork_client/features/pages.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -74,16 +76,6 @@ class UpWorkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var budget = job.budget == null
-        ? job.hourlyBudget.toString()
-        : job.budget.toString();
-
-    if (budget == 'null') {
-      budget = '';
-    } else {
-      budget += r' $';
-    }
-
     const top = 8.0;
     const rightLeft = 8.0;
     const radius = Radius.circular(10);
@@ -94,86 +86,73 @@ class UpWorkCard extends StatelessWidget {
         right: rightLeft,
         left: rightLeft,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: job.isPriority ?? false
-              ? const Color.fromRGBO(202, 229, 207, 1)
-              : Colors.white,
-          borderRadius: const BorderRadius.all(radius),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Wrap(
-                children: [
-                  StandardText(
-                    text: job.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    children: [
-                      StandardText(
-                        text: budget,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: StandardText(
-                          text: job.engagement?.value,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  StandardText(
-                    text: '${job.category?.value ?? ''}, ',
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: StandardText(
-                      text: job.contractorTier
-                          .toString()
-                          .replaceAll('ContractorTier.', ''),
-                    ),
-                  ),
-                ],
-              ),
-              StandardText(
-                text: job.country,
+      child: GestureDetector(
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => FullCard(job: job)),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: job.isPriority ?? false
+                ? const Color.fromRGBO(202, 229, 207, 1)
+                : Colors.white,
+            borderRadius: const BorderRadius.all(radius),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 3), // changes position of shadow
               ),
             ],
           ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Wrap(
+                  children: [
+                    StandardText(
+                      text: job.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Row(
+                      children: [
+                        StandardText(
+                          text: job.getBudget(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: StandardText(
+                            text: job.engagement?.value,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    StandardText(
+                      text: '${job.category?.value ?? ''}, ',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: StandardText(
+                        text: job.getContractorTier(),
+                      ),
+                    ),
+                  ],
+                ),
+                StandardText(
+                  text: job.country,
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class StandardText extends StatelessWidget {
-  const StandardText({required this.text, super.key, this.style});
-
-  final String? text;
-  final TextStyle? style;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        text ?? '',
-        style: style,
       ),
     );
   }

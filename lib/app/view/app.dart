@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upwork_client/core/core.dart';
 import 'package:upwork_client/features/pages.dart';
 import 'package:upwork_client/l10n/l10n.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
+
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,7 @@ class App extends StatelessWidget {
           }
         },
       ),
+      navigatorKey: navigatorKey,
     );
   }
 }
