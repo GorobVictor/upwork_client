@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:upwork_client/core/core.dart';
-import 'package:upwork_client/features/main/main_page.dart';
+import 'package:upwork_client/features/home_page/home_page_widget.dart';
+import 'package:upwork_client/features/jobs_list_screen/jobs_list_screen.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -42,7 +43,9 @@ class _LoginState extends State<Login> {
                   if (token != null) {
                     await LocalRepository().saveToken(token);
                     await Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => MainPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const HomePageWidget(),
+                      ),
                       (route) => false,
                     );
                   }

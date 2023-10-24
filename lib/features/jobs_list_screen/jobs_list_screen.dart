@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:upwork_client/core/core.dart';
 import 'package:upwork_client/core/providers/jobs_repository.dart';
-import 'package:upwork_client/features/full_card/full_card.dart';
 import 'package:upwork_client/features/pages.dart';
+import 'package:upwork_client/utils/styles/colors/app_colors.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class JobsListScreen extends StatefulWidget {
+  const JobsListScreen({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<JobsListScreen> createState() => _JobsListScreenState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _JobsListScreenState extends State<JobsListScreen> {
   final signalR = SignalRRepository();
 
   final Future<List<JobDto>?> func = JobsRepository().getJobs(0, 30);
@@ -42,18 +42,15 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Main Page')),
-      body: listJobs.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              controller: _scrollController,
-              itemCount: listJobs.length,
-              itemBuilder: (context, index) {
-                return UpWorkCard(job: listJobs[index]);
-              },
-            ),
-    );
+    return listJobs.isEmpty
+        ? const Center(child: CircularProgressIndicator())
+        : ListView.builder(
+            controller: _scrollController,
+            itemCount: listJobs.length,
+            itemBuilder: (context, index) {
+              return UpWorkCard(job: listJobs[index]);
+            },
+          );
   }
 
   void _handle(List<dynamic>? parameters) {
@@ -76,15 +73,14 @@ class UpWorkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const top = 8.0;
-    const rightLeft = 8.0;
+    const vertical = 2.0;
+    const horizontal = 8.0;
     const radius = Radius.circular(10);
 
     return Padding(
-      padding: const EdgeInsets.only(
-        top: top,
-        right: rightLeft,
-        left: rightLeft,
+      padding: const EdgeInsets.symmetric(
+        vertical: vertical,
+        horizontal: horizontal,
       ),
       child: GestureDetector(
         onTap: () async {
@@ -94,18 +90,17 @@ class UpWorkCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: job.isPriority ?? false
-                ? const Color.fromRGBO(202, 229, 207, 1)
-                : Colors.white,
+            color:
+                job.isPriority ?? false ? AppColors.greenD5 : AppColors.white,
             borderRadius: const BorderRadius.all(radius),
-            boxShadow: [
+            /*boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+                color: AppColors.black70.withOpacity(0.1),
                 spreadRadius: 5,
                 blurRadius: 7,
                 offset: const Offset(0, 3), // changes position of shadow
               ),
-            ],
+            ],*/
           ),
           child: Padding(
             padding: const EdgeInsets.all(10),

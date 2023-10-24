@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:upwork_client/app/view/app.dart';
 import 'package:upwork_client/core/core.dart';
 import 'package:upwork_client/features/pages.dart';
+import 'package:upwork_client/utils/styles/colors/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FullCard extends StatefulWidget {
@@ -26,9 +27,9 @@ class _FullCardState extends State<FullCard> {
     const smallRadius = Radius.circular(20);
     const padding = 15.0;
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Job details'),
+    return UpworkScaffold(
+      appBar: const UpworkAppBar(
+        title: 'Job details',
       ),
       body: Padding(
         padding: const EdgeInsets.only(
@@ -39,17 +40,15 @@ class _FullCardState extends State<FullCard> {
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: job.isPriority ?? false
-                ? const Color.fromRGBO(202, 229, 207, 1)
-                : Colors.white,
+            color: job.isPriority ?? false ? AppColors.greenD5 : Colors.white,
             borderRadius: const BorderRadius.all(radius),
             boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+              /*BoxShadow(
+                color: AppColors.green00.withOpacity(0.1),
                 spreadRadius: 5,
                 blurRadius: 7,
                 offset: const Offset(0, 3), // changes position of shadow
-              ),
+              ),*/
             ],
           ),
           child: Padding(
@@ -126,21 +125,28 @@ class _FullCardState extends State<FullCard> {
                         child: Container(
                           height: size.height * 0.4,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: job.isPriority ?? false
+                                ? AppColors.white
+                                : AppColors.greenD5,
                             borderRadius: const BorderRadius.all(smallRadius),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
+                                color: Colors.grey.withOpacity(0.1),
                                 spreadRadius: 5,
                                 blurRadius: 7,
                                 offset: const Offset(
-                                    0, 3), // changes position of shadow
+                                  0,
+                                  3,
+                                ), // changes position of shadow
                               ),
                             ],
                           ),
                           child: SingleChildScrollView(
                             child: Padding(
-                              padding: const EdgeInsets.all(padding),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 20,
+                              ),
                               child: StandardText(
                                 text: job.description,
                                 style: const TextStyle(
@@ -156,6 +162,7 @@ class _FullCardState extends State<FullCard> {
                           top: padding,
                         ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             ElevatedButton(
                               onPressed: isGptEnabled
@@ -207,14 +214,14 @@ class _FullCardState extends State<FullCard> {
                                       }
                                     }
                                   : null,
-                              child: Text('get Gpt vers'),
+                              child: const Text('get Gpt vers'),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: padding,
                               ),
                               child: Align(
-                                child: ElevatedButton(
+                                child: OutlinedButton(
                                   onPressed: () async {
                                     final uri = Uri.parse(job.link!);
                                     if (!await launchUrl(uri)) {
