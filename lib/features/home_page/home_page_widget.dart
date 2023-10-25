@@ -4,7 +4,9 @@ import 'package:upwork_client/features/pages.dart';
 import 'package:upwork_client/utils/utils.dart';
 
 class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({super.key});
+  const HomePageWidget({this.selectedPage, super.key});
+
+  final int? selectedPage;
 
   @override
   State<HomePageWidget> createState() => _HomePageWidgetState();
@@ -12,12 +14,21 @@ class HomePageWidget extends StatefulWidget {
 
 class _HomePageWidgetState extends State<HomePageWidget> {
   int _selectedTab = 0;
+  WebViewScreen webViewScreen = WebViewScreen();
 
-  final List<Widget> _pages = [
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectedPage != null) {
+      _selectedTab = widget.selectedPage!;
+    }
+  }
+
+  late final List<Widget> _pages = [
     const NotesScreen(),
     const ChatScreen(),
-    const JobsListScreen(),
-    const WebViewScreen(),
+    JobsListScreen(updateScreenIndexToBrowser: _changeTabToBrowser),
+    webViewScreen,
   ];
 
   final List<String> _titles = [
@@ -30,6 +41,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   void _changeTab(int index) {
     setState(() {
       _selectedTab = index;
+    });
+  }
+
+  void _changeTabToBrowser(String url) {
+    setState(() {
+      _selectedTab = 3;
+      webViewScreen.controller.loadRequest(Uri.parse(url));
     });
   }
 

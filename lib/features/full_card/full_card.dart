@@ -1,17 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:upwork_client/app/view/app.dart';
 import 'package:upwork_client/core/core.dart';
+import 'package:upwork_client/features/home_page/home_page_widget.dart';
 import 'package:upwork_client/features/pages.dart';
 import 'package:upwork_client/utils/styles/colors/app_colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class FullCard extends StatefulWidget {
-  final JobDto job;
+  const FullCard({
+    required this.job,
+    required this.updateScreenIndexToBrowser,
+    super.key,
+  });
 
-  const FullCard({required this.job, super.key});
+  final JobDto job;
+  final void Function(String) updateScreenIndexToBrowser;
 
   @override
   State<FullCard> createState() => _FullCardState();
@@ -27,6 +31,8 @@ class _FullCardState extends State<FullCard> {
     const smallRadius = Radius.circular(20);
     const padding = 15.0;
     final size = MediaQuery.of(context).size;
+    final updateScreenIndexToBrowser = widget.updateScreenIndexToBrowser;
+
     return UpworkScaffold(
       appBar: const UpworkAppBar(
         title: 'Job details',
@@ -158,7 +164,7 @@ class _FullCardState extends State<FullCard> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                           top: padding,
                         ),
                         child: Row(
@@ -217,18 +223,27 @@ class _FullCardState extends State<FullCard> {
                               child: const Text('get Gpt vers'),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(
+                              padding: const EdgeInsets.only(
                                 left: padding,
                               ),
                               child: Align(
                                 child: OutlinedButton(
-                                  onPressed: () async {
+                                  onPressed: job.link != null
+                                      ? () {
+                                          updateScreenIndexToBrowser(job.link!);
+                                          Navigator.pop(context);
+                                        }
+                                      : null,
+                                  /*  () async {
+                                    _openInBrowser();
                                     final uri = Uri.parse(job.link!);
                                     if (!await launchUrl(uri)) {
                                       throw 'Could not launch $job.link';
                                     }
-                                  },
-                                  child: Text('open in browser'),
+                                  },*/
+                                  child: Text(
+                                    'open in browser'.toUpperCase(),
+                                  ),
                                 ),
                               ),
                             ),
