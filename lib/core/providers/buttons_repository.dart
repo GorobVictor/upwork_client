@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:upwork_client/constant.dart';
 import 'package:upwork_client/core/core.dart';
-import 'package:http/http.dart' as http;
 
 class ButtonsRepository {
   factory ButtonsRepository() {
