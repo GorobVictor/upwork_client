@@ -5,7 +5,9 @@ import 'package:upwork_client/features/pages.dart';
 import 'package:upwork_client/utils/styles/colors/app_colors.dart';
 
 class JobsListScreen extends StatefulWidget {
-  const JobsListScreen({super.key});
+  const JobsListScreen({required this.updateScreenIndexToBrowser, super.key});
+
+  final void Function(String) updateScreenIndexToBrowser;
 
   @override
   State<JobsListScreen> createState() => _JobsListScreenState();
@@ -13,7 +15,6 @@ class JobsListScreen extends StatefulWidget {
 
 class _JobsListScreenState extends State<JobsListScreen> {
   final signalR = SignalRRepository();
-
   final Future<List<JobDto>?> func = JobsRepository().getJobs(0, 30);
   final List<JobDto> listJobs = [];
   final ScrollController _scrollController = ScrollController();
@@ -42,13 +43,17 @@ class _JobsListScreenState extends State<JobsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final updateScreenIndexToBrowser = widget.updateScreenIndexToBrowser;
     return listJobs.isEmpty
         ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
             controller: _scrollController,
             itemCount: listJobs.length,
             itemBuilder: (context, index) {
-              return UpWorkCard(job: listJobs[index]);
+              return UpWorkCard(
+                job: listJobs[index],
+                updateScreenIndexToBrowser: updateScreenIndexToBrowser,
+              );
             },
           );
   }
@@ -67,8 +72,10 @@ class _JobsListScreenState extends State<JobsListScreen> {
 }
 
 class UpWorkCard extends StatelessWidget {
-  const UpWorkCard({required this.job, super.key});
+  const UpWorkCard(
+      {required this.job, required this.updateScreenIndexToBrowser, super.key});
 
+  final void Function(String) updateScreenIndexToBrowser;
   final JobDto job;
 
   @override
@@ -85,7 +92,11 @@ class UpWorkCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () async {
           await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => FullCard(job: job)),
+            MaterialPageRoute(
+                builder: (context) => FullCard(
+                      job: job,
+                      updateScreenIndexToBrowser: updateScreenIndexToBrowser,
+                    )),
           );
         },
         child: Container(
