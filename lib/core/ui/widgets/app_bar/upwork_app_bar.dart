@@ -11,8 +11,12 @@ class UpworkAppBar extends StatelessWidget implements PreferredSizeWidget {
 
       title: title != null
           ? Text(
-        title!.toUpperCase(),
-      )
+              title!.toUpperCase(),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            )
           : null,
       elevation: 0,
       centerTitle: true,
