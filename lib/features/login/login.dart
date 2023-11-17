@@ -43,9 +43,7 @@ class _LoginState extends State<Login> {
                     await LocalRepository().saveToken(token);
                     await Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => const HomePageWidget(
-                          selectedPage: 0,
-                        ),
+                        builder: (context) => const HomePageWidget(),
                       ),
                       (route) => false,
                     );

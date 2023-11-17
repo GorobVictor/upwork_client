@@ -43,7 +43,6 @@ class _JobsListScreenState extends State<JobsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final updateScreenIndexToBrowser = widget.updateScreenIndexToBrowser;
     return listJobs.isEmpty
         ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
@@ -52,7 +51,7 @@ class _JobsListScreenState extends State<JobsListScreen> {
             itemBuilder: (context, index) {
               return UpWorkCard(
                 job: listJobs[index],
-                updateScreenIndexToBrowser: updateScreenIndexToBrowser,
+                openCard: openCard,
               );
             },
           );
@@ -65,17 +64,33 @@ class _JobsListScreenState extends State<JobsListScreen> {
         .toList();
 
     setState(() {
+      list?.forEach((element) {
+        element.isNew = true;
+      });
       listJobs.insertAll(0, list);
       print(list);
+    });
+  }
+
+  Future<void> openCard(JobDto job) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FullCard(
+          job: job,
+          updateScreenIndexToBrowser: widget.updateScreenIndexToBrowser,
+        ),
+      ),
+    );
+    setState(() {
+      job.isNew = false;
     });
   }
 }
 
 class UpWorkCard extends StatelessWidget {
-  const UpWorkCard(
-      {required this.job, required this.updateScreenIndexToBrowser, super.key});
+  const UpWorkCard({required this.job, required this.openCard, super.key});
 
-  final void Function(String) updateScreenIndexToBrowser;
+  final Function(JobDto) openCard;
   final JobDto job;
 
   @override
@@ -91,13 +106,7 @@ class UpWorkCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => FullCard(
-                      job: job,
-                      updateScreenIndexToBrowser: updateScreenIndexToBrowser,
-                    )),
-          );
+          await openCard(job);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -119,9 +128,27 @@ class UpWorkCard extends StatelessWidget {
               children: [
                 Wrap(
                   children: [
-                    StandardText(
-                      text: job.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    Row(
+                      children: [
+                        if (job.isNew)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.green00,
+                              ),
+                            ),
+                          ),
+                        Expanded(
+                          child: StandardText(
+                            text: job.title,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
                     Row(
                       children: [

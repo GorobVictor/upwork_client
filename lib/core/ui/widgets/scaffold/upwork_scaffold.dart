@@ -15,13 +15,18 @@ class UpworkScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.whiteF1,
-      appBar: appBar,
-      body: SafeArea(
-        child: body,
+    return WillPopScope(
+      onWillPop: () async {
+        return Navigator.canPop(context);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.whiteF1,
+        appBar: appBar,
+        body: SafeArea(
+          child: body,
+        ),
+        bottomNavigationBar: bottomNavigationBar,
       ),
-      bottomNavigationBar: bottomNavigationBar,
     );
   }
 }

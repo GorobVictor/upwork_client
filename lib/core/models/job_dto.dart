@@ -5,6 +5,35 @@ part 'job_dto.g.dart';
 
 @JsonSerializable()
 class JobDto {
+
+  JobDto(
+    this.id,
+    this.title,
+    this.description,
+    this.upWorkId,
+    this.link,
+    this.country,
+    this.priorityCountry,
+    this.isForbidden,
+    this.createdOn,
+    this.category,
+    this.budget,
+    this.hourlyBudget,
+    this.engagement,
+    this.workload,
+    this.english,
+    this.contractorTier,
+    this.clientScore,
+    this.clientCountFeedback,
+    this.clientOpenJobs,
+    this.history,
+    this.isPriority,
+    this.filterName,
+    this.questions,
+    this.skills,
+  );
+
+  factory JobDto.fromJson(Map<String, dynamic> json) => _$JobDtoFromJson(json);
   int? id;
   String? title;
   String? description;
@@ -29,22 +58,12 @@ class JobDto {
   String? filterName;
   List<String>? questions;
   List<SkillDto>? skills;
-
-  JobDto(this.id, this.title, this.description, this.upWorkId, this.link,
-      this.country, this.priorityCountry, this.isForbidden, this.createdOn,
-      this.category, this.budget, this.hourlyBudget, this.engagement,
-      this.workload, this.english, this.contractorTier, this.clientScore,
-      this.clientCountFeedback, this.clientOpenJobs, this.history,
-      this.isPriority, this.filterName, this.questions, this.skills,);
-
-  factory JobDto.fromJson(Map<String, dynamic> json) => _$JobDtoFromJson(json);
+  bool isNew = false;
 
   Map<String, dynamic> toJson() => _$JobDtoToJson(this);
 
   String getBudget() {
-    var result = budget == null
-        ? hourlyBudget.toString()
-        : budget.toString();
+    var result = budget == null ? hourlyBudget.toString() : budget.toString();
     if (result == 'null') {
       result = '';
     } else {
@@ -54,8 +73,6 @@ class JobDto {
   }
 
   String getContractorTier() {
-    return contractorTier
-        .toString()
-        .replaceAll('ContractorTier.', '');
+    return contractorTier.toString().replaceAll('ContractorTier.', '');
   }
 }

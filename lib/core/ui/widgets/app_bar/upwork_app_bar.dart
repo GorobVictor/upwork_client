@@ -8,6 +8,7 @@ class UpworkAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+
       title: title != null
           ? Text(
         title!.toUpperCase(),
@@ -15,6 +16,7 @@ class UpworkAppBar extends StatelessWidget implements PreferredSizeWidget {
           : null,
       elevation: 0,
       centerTitle: true,
+
     );
   }
 

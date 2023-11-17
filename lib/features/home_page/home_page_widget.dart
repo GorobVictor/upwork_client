@@ -13,7 +13,7 @@ class HomePageWidget extends StatefulWidget {
 }
 
 class _HomePageWidgetState extends State<HomePageWidget> {
-  int _selectedTab = 0;
+  int _selectedTab = 2;
   WebViewScreen webViewScreen = WebViewScreen();
 
   @override

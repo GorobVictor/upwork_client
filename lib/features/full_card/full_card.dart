@@ -188,9 +188,10 @@ class _FullCardState extends State<FullCard> {
                                         });
                                       } catch (ex) {}
                                       if (result == null || result.isEmpty) {
-                                        ScaffoldMessenger.of(App.navigatorKey
-                                                .currentState!.context)
-                                            .showSnackBar(
+                                        ScaffoldMessenger.of(
+                                          App.navigatorKey.currentState!
+                                              .context,
+                                        ).showSnackBar(
                                           const SnackBar(
                                             content: Text(
                                               'Gpt returns error',
@@ -249,7 +250,7 @@ class _FullCardState extends State<FullCard> {
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
