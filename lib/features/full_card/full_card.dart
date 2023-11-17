@@ -286,10 +286,11 @@ class AnswerGptWindow extends StatelessWidget {
                       Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 25,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      const SizedBox(height: 20),
                       GestureDetector(
                         onLongPress: () async {
                           await Clipboard.setData(ClipboardData(text: text));

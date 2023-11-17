@@ -7,7 +7,7 @@ abstract class AppBottomSheetTheme {
   static BottomSheetThemeData get darkTheme => _darkTheme();
 
   static BottomSheetThemeData _lightTheme() => const BottomSheetThemeData(
-      backgroundColor: AppColors.blue39,
+      backgroundColor: AppColors.whiteD4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(35)),
       ));
