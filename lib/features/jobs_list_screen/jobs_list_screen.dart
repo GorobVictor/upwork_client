@@ -33,43 +33,104 @@ class _JobsListScreenState extends State<JobsListScreen> {
     _scrollController.addListener(() async {
       if (_scrollController.position.maxScrollExtent ==
           _scrollController.position.pixels) {
-        final result = await JobsRepository().getJobs(listJobs.length, 30);
-        setState(() {
-          listJobs.addAll(result!);
-        });
+        await uploadMoreCards();
       }
+    });
+  }
+
+  Future<void> uploadMoreCards() async {
+    final result = await JobsRepository().getJobs(listJobs.length, 30);
+    setState(() {
+      listJobs.addAll(result!);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final listFilterJobs = getJobsByFilter();
+
+    if (listFilterJobs != null && listFilterJobs.length < 8) {
+      uploadMoreCards();
+    }
     return listJobs.isEmpty
         ? const Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            controller: _scrollController,
-            itemCount: listJobs.length,
-            itemBuilder: (context, index) {
-              return UpWorkCard(
-                job: listJobs[index],
-                openCard: openCard,
-              );
-            },
+        : Column(
+            children: [
+              Row(
+                children: scores
+                    .map(
+                      (e) => FilterButton(
+                        onPressed: () {
+                          setState(() {
+                            if (activeScore == e) {
+                              activeScore = null;
+                            } else {
+                              activeScore = e;
+                            }
+                          });
+                        },
+                        score: e,
+                        isActive: activeScore == e,
+                      ),
+                    )
+                    .toList(),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.738,
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: listFilterJobs.length,
+                  itemBuilder: (context, index) {
+                    return UpWorkCard(
+                      job: listFilterJobs[index],
+                      openCard: openCard,
+                    );
+                  },
+                ),
+              ),
+            ],
           );
   }
 
-  void _handle(List<dynamic>? parameters) {
-    final list = (parameters!.first as List)
-        .map((e) => e as Map<String, dynamic>)
-        .map(JobDto.fromJson)
-        .toList();
+  List<int> scores = [5, 4, 3, 2, 1];
+  int? activeScore;
 
-    setState(() {
+  List<JobDto> getJobsByFilter() {
+    if (listJobs == null || listJobs.isEmpty) return listJobs;
+
+    if (activeScore == null) {
+      return listJobs;
+    }
+
+    return listJobs.where((e) => e.wttScore == activeScore).toList();
+  }
+
+  void _handle(List<dynamic>? parameters) {
+    try {
+      final list = (parameters!.first as List)
+          .map((e) => e as Map<String, dynamic>)
+          .map(JobDto.fromJson)
+          .toList();
+
       list?.forEach((element) {
         element.isNew = true;
       });
       listJobs.insertAll(0, list);
       print(list);
-    });
+
+      var i = 0;
+      while (i < 5) {
+        try {
+          setState(() {});
+          break;
+        } catch (e) {
+          i++;
+          print('$i => $e');
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> openCard(JobDto job) async {
@@ -110,8 +171,10 @@ class UpWorkCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color:
-                job.isPriority ?? false ? AppColors.greenD5 : AppColors.white,
+            color: job.isPriority ?? false
+                ? AppColors.greenD5
+                // ? AppColors.getColor(job.wttScore)
+                : AppColors.white,
             borderRadius: const BorderRadius.all(radius),
             /*boxShadow: [
               BoxShadow(
@@ -142,6 +205,16 @@ class UpWorkCard extends StatelessWidget {
                               ),
                             ),
                           ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: StandardText(
+                            text: job.wttScore?.toInt().toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
                         Expanded(
                           child: StandardText(
                             text: job.title,
@@ -187,6 +260,34 @@ class UpWorkCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class FilterButton extends StatelessWidget {
+  FilterButton(
+      {required this.score,
+      required this.onPressed,
+      required this.isActive,
+      super.key});
+
+  int score;
+  Function() onPressed;
+  bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: isActive
+          ? ElevatedButton(
+              onPressed: onPressed,
+              child: Text(score.toString()),
+            )
+          : OutlinedButton(
+              onPressed: onPressed,
+              child: Text(score.toString()),
+            ),
     );
   }
 }

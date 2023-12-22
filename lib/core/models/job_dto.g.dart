@@ -35,7 +35,8 @@ JobDto _$JobDtoFromJson(Map<String, dynamic> json) => JobDto(
       json['english'] == null
           ? null
           : SingleValueDto.fromJson(json['english'] as Map<String, dynamic>),
-      $enumDecodeNullable(_$ContractorTierEnumMap, json['contractorTier'].toString()),
+      $enumDecodeNullable(
+          _$ContractorTierEnumMap, json['contractorTier'].toString()),
       (json['clientScore'] as num?)?.toDouble(),
       json['clientCountFeedback'] as int?,
       json['clientOpenJobs'] as int?,
@@ -48,7 +49,16 @@ JobDto _$JobDtoFromJson(Map<String, dynamic> json) => JobDto(
       (json['skills'] as List<dynamic>?)
           ?.map((e) => SkillDto.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+    )
+      ..clientHireRate = json['clientHireRate'] as int?
+      ..clientJobsPosted = json['clientJobsPosted'] as int?
+      ..clientTotalSpent = (json['clientTotalSpent'] as num?)?.toDouble()
+      ..avgHourlyRatePaid = (json['avgHourlyRatePaid'] as num?)?.toDouble()
+      ..includeRisingTalent = json['includeRisingTalent'] as bool?
+      ..jobSuccessScore = json['jobSuccessScore'] as String?
+      ..location = json['location'] as String?
+      ..wttScore = (json['wttScore'] as num?)?.toDouble()
+      ..isNew = false;
 
 Map<String, dynamic> _$JobDtoToJson(JobDto instance) => <String, dynamic>{
       'id': instance.id,
@@ -70,11 +80,20 @@ Map<String, dynamic> _$JobDtoToJson(JobDto instance) => <String, dynamic>{
       'clientScore': instance.clientScore,
       'clientCountFeedback': instance.clientCountFeedback,
       'clientOpenJobs': instance.clientOpenJobs,
+      'clientHireRate': instance.clientHireRate,
+      'clientJobsPosted': instance.clientJobsPosted,
+      'clientTotalSpent': instance.clientTotalSpent,
+      'avgHourlyRatePaid': instance.avgHourlyRatePaid,
+      'includeRisingTalent': instance.includeRisingTalent,
+      'jobSuccessScore': instance.jobSuccessScore,
+      'location': instance.location,
+      'wttScore': instance.wttScore,
       'history': instance.history,
       'isPriority': instance.isPriority,
       'filterName': instance.filterName,
       'questions': instance.questions,
       'skills': instance.skills,
+      'isNew': instance.isNew,
     };
 
 const _$ContractorTierEnumMap = {

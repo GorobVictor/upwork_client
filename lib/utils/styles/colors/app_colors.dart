@@ -56,4 +56,30 @@ class AppColors {
   static const Color pink9B = Color(0xFFFF9A9B);
   static const Color peachC2 = Color(0xFFF8CEC2);
   static const Color purpleDF = Color(0xFF8546DF);
+
+
+
+  static const Color green110 = Colors.lightGreen;
+  static const Color greenA64 = Colors.lightGreenAccent;
+  static const Color yellow = Colors.yellowAccent;
+  static const Color orange = Colors.orangeAccent;
+  static const Color red505 = Colors.redAccent;
+
+
+  static Color getColor(double? score){
+    switch(score){
+      case 5:
+        return green110;
+      case 4:
+        return greenA64;
+      case 3:
+        return yellow;
+      case 2:
+        return orange;
+      case 1:
+        return red505;
+      default:
+        return red505;
+    }
+  }
 }

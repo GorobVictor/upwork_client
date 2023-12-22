@@ -5,7 +5,6 @@ part 'job_dto.g.dart';
 
 @JsonSerializable()
 class JobDto {
-
   JobDto(
     this.id,
     this.title,
@@ -53,6 +52,16 @@ class JobDto {
   double? clientScore;
   int? clientCountFeedback;
   int? clientOpenJobs;
+
+  int? clientHireRate;
+  int? clientJobsPosted;
+  double? clientTotalSpent;
+  double? avgHourlyRatePaid;
+  bool? includeRisingTalent;
+  String? jobSuccessScore;
+  String? location;
+  double? wttScore;
+
   List<ChatGptHistory>? history;
   bool? isPriority;
   String? filterName;
