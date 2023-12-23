@@ -28,4 +28,19 @@ class AccountRepository {
     }
     return null;
   }
+
+  Future<bool> checkToken() async {
+    final response = await http.get(
+      Uri.parse('${Constant.domain}api/Account/CheckToken'),
+      headers: <String, String>{
+        'Authorization': 'Bearer ${await LocalRepository().getToken()}',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if(response.statusCode == 200){
+      return true;
+    }
+    return false;
+  }
 }

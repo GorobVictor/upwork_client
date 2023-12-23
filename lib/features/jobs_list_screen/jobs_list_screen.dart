@@ -29,6 +29,8 @@ class _JobsListScreenState extends State<JobsListScreen> {
         });
         signalR.addOn(_handle);
       } catch (e) {}
+    }).catchError((v){
+      print(v);
     });
     _scrollController.addListener(() async {
       if (_scrollController.position.maxScrollExtent ==
@@ -278,7 +280,7 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(4),
       child: isActive
           ? ElevatedButton(
               onPressed: onPressed,

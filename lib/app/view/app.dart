@@ -20,9 +20,24 @@ class App extends StatelessWidget {
         future: LocalRepository().getToken(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return snapshot.data != null
-                ? const HomePageWidget()
-                : const Login();
+            if (snapshot.data != null) {
+              return FutureBuilder(
+                future: AccountRepository().checkToken(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data ?? false) {
+                      return const HomePageWidget();
+                    }
+                    LocalRepository().removeToken();
+                    return const Login();
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              );
+            }
+            LocalRepository().removeToken();
+            return const Login();
           } else {
             return const Center(child: CircularProgressIndicator());
           }
